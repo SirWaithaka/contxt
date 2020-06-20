@@ -57,7 +57,7 @@ func HandleRequest() http.Handler {
 		// localhost:9090?name=hello&age=20
 		// we can retrieve the query params name and hello using
 		// the Query func
-		name := ctx.Query("name")
+		country := ctx.Query("country")
 		age := ctx.Query("age")
 
 		// when we are expecting POST requests and forms are being submitted
@@ -81,9 +81,11 @@ func HandleRequest() http.Handler {
 		}
 
 		person := map[string]interface{}{
-			"name": name,
+			"country": country,
 			"place": "world",
 			"age": ageInt,
+			"name": form.FirstName+ " " +form.LastName,
+			"birthYear": form.YearOfBirth,
 		}
 		_ = ctx.Status(http.StatusOK).JSON(person)
 
@@ -98,5 +100,47 @@ func main() {
 	}
 	log.Fatal(srv.ListenAndServe())
 }
+```
 
+## cURL examples
+Send a form `POST` request with html form values
+```bash
+curl --location --request POST 'localhost:9090?age=20&country=kenya' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'first_name=john' \
+--data-urlencode 'last_name=smith' \
+--data-urlencode 'year_of_birth=2000'
+```
+
+Response
+```json
+{
+    "name": "john smith",
+    "birthYear": 2000,
+    "country": "kenya",
+    "place": "world",
+    "age": 20
+}
+```
+
+Send a `POST` with `application/json` mime type
+```bash
+curl --location --request POST 'localhost:9090?age=20&country=kenya' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+	"first_name": "john",
+	"last_name": "smith",
+	"year_of_birth": 2000
+}'
+```
+
+Response
+```json
+{
+    "place": "world",
+    "age": 20,
+    "name": "john smith",
+    "birthYear": 2000,
+    "country": "kenya"
+}
 ```
