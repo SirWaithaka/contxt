@@ -1,3 +1,12 @@
+# Go HTTP Contxt
+Naming is difficult I agree. This small lib is my own idea of how I do and handle http requests using the default Golang
+http.HandlerFunc `func(w http.ResponseWriter, r *http.Request)`.
+
+This lib focuses on the `*http.Request` request. Also, how to write different response types to `http.ResponseWriter`.
+This comes kinda makes the code clean and focused on the business logic only.
+
+## Usage
+```go
 package main
 
 import (
@@ -89,3 +98,5 @@ func main() {
 	}
 	log.Fatal(srv.ListenAndServe())
 }
+
+```
